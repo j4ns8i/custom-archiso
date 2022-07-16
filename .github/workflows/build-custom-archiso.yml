@@ -1,0 +1,16 @@
+name: "Build custom archiso"
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: archlinux:base-devel
+    steps:
+      - name: Build archiso
+        run: ./scripts/mkarchiso.sh
+      - run: |
+          echo "buildDate=$(date +%Y.%m.%d)" >> $GITHUB_ENV
+          echo "arch=$(uname -m)" >> $GITHUB_ENV
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: archlinux-custom-${{ env.buildDate }}-${{ env.arch }}.iso
+          path: target/build/out/
